@@ -3,60 +3,58 @@
 <head>
 <title>SMAL webpage POGGERS????</title>
  <style>
+ * {
+    font-family: Georgia, serif;
+    
+ }
+ 
 .footer {
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
+  height:25%;
   background-color: red;
   color: white;
   text-align: center;
 }
- /* Three image containers (use 25% for four, and 50% for two, etc) */
-.column {
-  float: left;
-  width: auto;
-  padding: 0px;
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  
+  padding: 0;
 }
-.column_end {
-  float: right;
-  width: auto;
-  padding: 0px;
+.skulls {
+  width: 100%;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  margin-bottom: 20px; 
+  font-size: 30px;
+  
+  background:transparent url("skull.gif") repeat scroll 0% 0%;  
 }
-
-/* Clear floats after image containers */
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-} 
+.warning {
+  width: 100px;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+}
 </style>
 </head>
 <body style="background-color:#00FF00;">
 <div style="text-align:center">
-<h1 style="color:#FF0000">OMG GuYYSSss!!!!</h1>
+<h1 style="color:#ff0000">OMG GuYYSSss!!!!</h1>
 <img src="cat.gif" alt="kitty cat">
-<p  style="color:#0000FF">
+<p  style="color:#0000ff">
 WelCOME to Smaal's WEBPAGe x3333
 </p>
 </div>
 <div class="footer">
   <p>*notices you*</p>
- <div class="row">
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column"><img src="skull.gif"></div>
-  <div class="column_end"><img src="original.gif"></div>
+ <div class="flex-container">
+  <div class="skulls"></div>
+  <div class="warning"><img src="original.gif"></div>
 </div> 
 </div> 
 </body>
