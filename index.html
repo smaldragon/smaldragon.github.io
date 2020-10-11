@@ -2,60 +2,90 @@
 <html>
 <head>
 <title>SMAL webpage POGGERS????</title>
- <style>
- * {
-    font-family: Georgia, serif;
-    
- }
- 
-.footer {
-  position: fixed;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+margin: 0 0 100px;
+font-family: Georgia, serif;
+background-color:#00FF00
+}
+
+.content {
+padding: 15px;
+box-sizing: border-box;
+text-align: center;
+min-height: 460px;
+}
+
+footer {
+  position: absolute;
   left: 0;
   bottom: 0;
+  height: 150px;
   width: 100%;
-  height:25%;
-  background-color: red;
-  color: white;
+  color: #ffffff;
+  background: #ff0000;
   text-align: center;
 }
+
 .flex-container {
   display: flex;
   flex-direction: row;
-  
+  line-height: 75px;
   padding: 0;
 }
+
 .skulls {
   width: 100%;
-  height: 100px;
-  text-align: center;
-  line-height: 100px;
-  margin-bottom: 20px; 
-  font-size: 30px;
-  
+  height: fill;
   background:transparent url("skull.gif") repeat scroll 0% 0%;  
 }
+
 .warning {
-  width: 100px;
-  text-align: center;
-  line-height: 75px;
-  font-size: 30px;
+  width: 80px;
+}
+
+#soundcloud:link,
+#soundcloud:visited,
+#soundcloud:hover,
+#soundcloud:active {
+  color: white;
+  background-color: orange;
+}
+
+#youtube:link,
+#youtube:visited,
+#youtube:hover,
+#youtube:active {
+  color: white;
+  background-color: tomato;
 }
 </style>
 </head>
-<body style="background-color:#00FF00;">
-<div style="text-align:center">
-<h1 style="color:#ff0000">OMG GuYYSSss!!!!</h1>
-<img src="cat.gif" alt="kitty cat">
-<p  style="color:#0000ff">
-WelCOME to Smaal's WEBPAGe x3333
-</p>
+<body>
+<div class="content">
+  <section role="main">
+    <h1 style="color:#ff0000">OMG GuYYSSss!!!!</h1>
+    <img src="cat.gif" alt="kitty cat">
+    <p  style="color:#0000ff">
+    WelCOME to Smaal's WEBPAGe x3333
+    </p>
+    <a href="https://www.soundcloud.com/smalfox" id="soundcloud"><b>Soundcloud</b></a>
+    <a href="https://www.youtube.com/channel/UCc6s_R5sCbUdjbTFkHXzzfw" id="youtube"><b>Youtube</b></a>
+  </section>
 </div>
-<div class="footer">
+<footer>
   <p>*notices you*</p>
- <div class="flex-container">
-  <div class="skulls"></div>
-  <div class="warning"><img src="original.gif"></div>
-</div> 
-</div> 
+  <div class="flex-container">
+    <div class="skulls"></div>
+    <div class="warning"><img src="original.gif"></div>
+  </div>
+</footer>
 </body>
 </html>
