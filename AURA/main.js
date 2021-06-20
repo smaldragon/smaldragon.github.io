@@ -10,7 +10,7 @@ function loadJSON(filePath) {
 }
 
 function init() {
-    points = loadJSON('https://raw.githubusercontent.com/smaldragon/AURA/master/points.json')
+    points = loadJSON('https://raw.githubusercontent.com/smaldragon/AURA/main/points.json')
     computed = loadJSON('https://raw.githubusercontent.com/smaldragon/AURA/main/computed.json')
 
     a = document.getElementById("stations")
