@@ -38,11 +38,15 @@
 
   tr,
   img {
-    page-break-inside: avoid;
+    /*page-break-inside: avoid;*/
   }
 
   img {
     max-width: 100% !important;
+    min-width: 50% !important;
+    padding: 4px;
+    image-rendering: -webkit-optimize-contrast; /* webkit */
+    image-rendering: -moz-crisp-edges; /* Firefox */
   }
 
   p,
@@ -134,15 +138,18 @@ small,
 }
 
 /* https://github.com/mrmrs/fluidity */
-
-img,
 canvas,
 iframe,
 video,
 svg,
 select,
-textarea {
+textarea,
+img{
   max-width: 100%;
+  min-width: 3%;
+  image-rendering: -webkit-optimize-contrast; /* webkit */
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  padding: 4px
 }
 
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,300);
