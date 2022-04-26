@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+
+<channel>
+  <title>smal's blog</title>
+  <link>https://smaldragon.github.io/blog</link>
+  <description>smal's personal blog</description>
+  
+<item>
+<description>Advanding tests in articles, wow</description>
+<link>https://smaldragon.github.io/blog/article.html</link>
+<pubDate>Sat, 07 Sep 2002 00:00:01 GMT</pubDate>
+<title>Test Article - smal's blog</title>
+</item>
+</channel>
+
+</rss> 
