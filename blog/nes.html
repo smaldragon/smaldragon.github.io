@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NES Memory Reference - smal's blog</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+<h1>smal's blog</h1>
+<p><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/8/82/NES-Console-Set.jpg" /></p>
+<h1>NES Memory Reference</h1>
+<blockquote>
+<p>Most info here has been compiled from nesdev.org, this is simply a reference page with everything in 1 spot, made to help me with nes homebrew.</p>
+</blockquote>
+<p>The NES has 3 separate address spaces:</p>
+<ul>
+<li><strong>CPU Memory</strong> - Where the game code runs, it has a 16-bit width (65536 addresses)</li>
+<li><strong>PPU Memory</strong> - Where the background and tiles are stored, it has a 14-bit width (16384 addresses)</li>
+<li><strong>OAM Memory</strong> - Where the sprites position, flipping and tile index are stored, it has a 8-bit width (256 addresses)</li>
+</ul>
+<hr />
+<h1>CPU Memory</h1>
+<pre><code>.--------------------------------------.
+|        64KB CPU ADDRESS SPACE        |
+|--------------------------------------|
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x0000  | Work Ram          | 2,048  | 
+| 0x2000  | PPU Registers     | 8      |
+| 0x4000  | APU/IO Registers  | 32     |
+| 0x4020  | Cartridge Space   | 32,736 |
+'--------------------------------------'
+* note: work ram and ppu registers are mirrored
+   in the &quot;empty&quot; space following them
+</code></pre>
+<h2>Work RAM</h2>
+<p>All RAM can be accessed equally by the CPU, however the first two pages are also used for special purposes by the CPU:</p>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x0000  | 2a03 Zero Page    | 256    | 
+| 0x0100  | 2a03 Stack Page   | 256    |
+| 0x0200  | General Purpose   | 1,536  |
+'--------------------------------------'
+</code></pre>
+<h2>PPU Registers</h2>
+<p>A set of 8 registers allow the CPU to communicate with the PPU, access to the PPU and OAM Memory is also done through these registers:</p>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x2000  | PPU CTRL          | 1      |
+| write:  +----------------------------| 
+|  NMI Enable(V)                1bit   |
+|  PPU Master/Slave(P)          1bit   |
+|  Sprite Height(H)             1bit   |
+|  Background Pattern Table(B)  1bit   |
+|  Sprite Pattern Table         1bit   | 
+|  Increment Mode(I)            1bit   |
+|  Nametable Address(NN)        2bit   |
+|---------+-------------------+--------|
+| 0x2001  | PPU MASK          | 1      |
+| write:  +----------------------------| 
+|  Color Emphasis(BGR)          3bit   |
+|  Sprite Enable(s)             1bit   |
+|  Background Enable(b)         1bit   |
+|  Sprite Left Col Enable(M)    1bit   |
+|  Background Left Col Enable(m)1bit   |
+|  Greyscale Mode(G)            1bit   |
+|---------+-------------------+--------|
+| 0x2002  | PPU STATUS        | 1      |
+| read:   +----------------------------| 
+|  VBlank Started(V)            1bit   |
+|  Sprite Zero Hit(S)           1bit   |
+|  Sprite Overflow(O)           1bit   |
+|  ---                          5bit   |
+|---------+-------------------+--------|
+| 0x2003  | OAM ADDR          | 1      |
+| 0x2004  | OAM DATA          | 1      |
+| 0x2005  | PPU SCROLL(x,y)   | 1      |
+| 0x2006  | PPU ADDR (msb,lsb)| 1      |
+| 0x2007  | PPU DATA          | 1      |
+'--------------------------------------'
+* note: PPU SCROLL and ADDR are written in 
+    2 consecutive writes
+</code></pre>
+<p>The OAM and PPU memory spaces can be accessed by the CPU by writing to the respective ADDR/DATA registers, however OAM data should instead be transferred by using the 2a03 DMA feature.</p>
+<p>The <code>PPU ADDR</code> auto increments whenever <code>PPU DATA</code> is read/written, this is controlled by the Increment Mode bit in <code>PPU CTRL</code>, 0=increments of 1/going across, 1 = increments of 32/going down</p>
+<h2>2a03 Registers (APU and IO)</h2>
+<p>The 2a03 chip contains 32 memory mapped registers, these control the APU (Audio Processing Unit), controller input and OAM DMA, as well as several unused/test registers.</p>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x4000  | APU Pulse 1       | 4      |
+| 0x4004  | APU Pulse 2       | 4      |
+| 0x4008  | APU Triangle      | 4      |
+| 0x400C  | APU Noise         | 4      |
+| 0x4010  | APU DMC/Sample    | 4      |
+| 0x4014  | OAM DMA control   | 1      |
+| 0x4015  | APU channel enable| 1      |
+| 0x4016  | Joystick 1        | 1      |
+| 0x4017  | Joystick 2        | 1      |
+| 0x4018  | Unused/Test       | -      |
+'--------------------------------------'
+</code></pre>
+<blockquote>
+<p>TODO: Info about registers here</p>
+</blockquote>
+<h3>APU</h3>
+<p>The APU (Audio Processing Unit) produces the audio of the NES, there are 5 different channels, most of which function in differing ways:</p>
+<ul>
+<li>2 Pulse Channels</li>
+<li>1 Triangle Channel</li>
+<li>1 Noise Channel</li>
+<li>1 DMC/Sample Channel</li>
+</ul>
+<h4>Pulse Channels</h4>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x4000  | Duty and Volume   | 1      |
+|         +----------------------------|
+|  Duty Cycle                   2bit   |
+|  Length Counter Halt          1bit   |
+|  Constant Volume              1bit   |
+|  Volume/Envelope              4bit   |
+|---------+----------------------------|
+| 0x4001  | Sweep Control     | 1      |
+|         +----------------------------| x2 Pulse Channels
+|  Enable(E)                    1bit   |
+|  Divider P+1 half frames (P)  3bit   |
+|  Negate flag (N)              1bit   |
+|  Shift Count(SSS)             3bit   |
+|---------+----------------------------|
+| 0x4002  | Freq Low          | 1      |
+| 0x4003  | Counter/Freq Hi   | 1      |
+|         +----------------------------|
+|  Length counter load          5bit   |
+|  Freq Hi                      3bit   |
+'--------------------------------------'
+</code></pre>
+<h4>Triangle Channel</h4>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x4008  | Linear Counter    | 1      |
+| 0x400A  | Freq Low          | 1      |
+| 0x400B  | Counter/Freq Hi   | 1      |
+'--------------------------------------'
+</code></pre>
+<h4>Noise Channel</h4>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x400C  | Length/Volume     | 1      |
+| 0x400E  | Mode/Period       | 1      |
+| 0x400F  | Counter           | 1      |
+'--------------------------------------'
+</code></pre>
+<h4>DMC Channel</h4>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x4010  | Flags and Rate    | 1      |
+| 0x4011  | Direct Load       | 1      |
+| 0x4012  | Sample Address    | 1      |
+| 0x4013  | Sample Length     | 1      |
+'--------------------------------------'
+</code></pre>
+<h4>Channel Control</h4>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x4010  | Status            | 1      |
+|  write  +----------------------------|
+|    ---                        3bit   |
+|    Enable DMC                 1bit   |
+|    Enable Noise               1bit   |
+|    Enable Triangle            1bit   |
+|    Enable Pulse 2             1bit   |
+|    Enable Pulse 1             1bit   |
+|  read                                |
+|    DMC Interrupt              1bit   |
+|    Frame Interrupt            1bit   |
+|     ---                       1bit   |
+|    DMC Active                 1bit   |
+|    Length Counters (T/N/2/1)  4bit   |
+'--------------------------------------'
+</code></pre>
+<h3>IO</h3>
+<h3>OAM DMA</h3>
+<p>When the <code>OAM_DMA</code> register is written to, the 256 bytes at the specified page are written to the <code>OAM_DATA</code> register of the PPU, the CPU is paused during the 513-514 cycles of this process.</p>
+<p>This DMA is the proper way to update OAM and should be performed every vblank, as the OAM memory will become corrupted if it is not regularly refreshed.</p>
+<p>It is common practice to initialize the PPU's <code>OAM_ADDR</code> register to 0 before performing this write.</p>
+<h2>Cartridge Space</h2>
+<p>The Cartridge Space will vary depending on what memory mapper is being used, however some areas have fixed purposes:</p>
+<pre><code>.---------------------------------------.
+| ADDR    | INFO               | BYTES  |
+|---------+--------------------+--------|
+| 0x4020  | Program Space      | 32,730 |
+| 0xFFFA  | 2a03 NMI Vector    | 2      |
+| 0xFFFC  | 2a03 Reset Vector  | 2      |
+| 0xFFFE  | 2a03 IRQ/BRK Vector| 2      |
+'---------------------------------------'
+Additionally the space from 0xC000 
+  to 0xFFF1 can contain DPCM samples.
+</code></pre>
+<p>The Vectors contain the addresses that the CPU will jump to whenever certain types of interrupt occur.</p>
+<hr />
+<h1>PPU Memory</h1>
+<pre><code>.--------------------------------------.
+|        16KB PPU ADDRESS SPACE        |
+|--------------------------------------|
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x0000  | Patterns/Cart     | 8,192  | 
+| 0x2000  | Nametables/VRAM   | 4,096* |
+| 0x3F00  | Palette RAM       | 32     |
+'--------------------------------------'
+* The NES only has 2,048 bytes of internal VRAM, 
+  unless the cartridge has aditional VRAM this 
+  space will be mirrored in either an 
+  horizontal or vertical manner.
+</code></pre>
+<h2>PatternTables</h2>
+<p>A PatternTable is a 4096 byte area of memory that defines the graphics to be used for the tiles that constitute the backgrounds and sprites.</p>
+<p>There exist 2 different pattern tables, the sprites and tiles can independently select either of these to use, via the appropriate bits in the <code>PPU_CTRL</code> register. They are located inside the cartridge and can either be in ROM or RAM, as well as possible bankings offered by the mapper being used.</p>
+<p>Each tile is composed of 16 bytes in a bit-plane format:</p>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x0000  | Color Bit 0       | 8      | x256 tiles x2 Pattern tables 
+| 0x0008  | Color Bit 1       | 8      |
+'--------------------------------------'
+</code></pre>
+<h2>NameTables</h2>
+<p>A NameTable is a 1024 byte area of memory that lays out a background, the PPU has 4 different NameTables located at 0x2000, 0x2400, 0x2800 and 0x2C00. Note that unless the cartridge includes extra vram, 2 of these NameTables will be mirrors of each other, either in a horizontal or vertical fashion, as the NES only has 2Kb of internal VRAM.</p>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x2000  | Tiles (32x30)     | 960    | x4 Nametables 
+| 0x23C0  | Colors (8x8)      | 64     |
+'--------------------------------------'
+</code></pre>
+<p>Each byte of the colors attribute table selects the palette to be used in a 32x32 (2x2 tile) area.</p>
+<h2>Palette Memory</h2>
+<p>Palette memory holds the colors to be used by each of the 16 palettes. Each palette has 4 colors but the first is always either the background color (background palettes) or transparent (sprite palettes).</p>
+<pre><code>.--------------------------------------.
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x3F00  | Background Color  | 1      |
+| 0x3F01  | BG Palette 0      | 3      |
+| 0x3F05  | BG Palette 1      | 3      |
+| 0x3F09  | BG Palette 2      | 3      |
+| 0x3F0D  | BG Palette 3      | 3      |
+| 0x3F11  | SP Palette 0      | 3      |
+| 0x3F15  | SP Palette 1      | 3      |
+| 0x3F19  | SP Palette 2      | 3      |
+| 0x3F1D  | SP Palette 3      | 3      |
+'--------------------------------------'
+</code></pre>
+<p>The palette colors are selected from the 64 color master palette of the NES:</p>
+<p><img alt="NES Palette" src="https://www.nesdev.org/w/images/default/5/59/Savtool-swatches.png" /></p>
+<hr />
+<h1>OAM Memory</h1>
+<p>OAM memory holds the data for the 64 sprites/objects:</p>
+<pre><code>.--------------------------------------.
+|        256b OAM ADDRESS SPACE        |
+|--------------------------------------|
+| ADDR    | INFO              | BYTES  |
+|---------+-------------------+--------|
+| 0x00    | Sprite Y Position | 1      |  
+| 0x01    | Sprite Tile Index | 1      |
+| 0x02    | Sprite Attributes | 1      |
+|         +----------------------------|
+|  Flip Vertically              1bit   |
+|  Flip Horizontally            1bit   | x 64 sprites
+|  In front/In back of bg       1bit   |
+|  ---                          3bit   |
+|  Palette of sprite (4 to 7)   2bit   |
+|---------+--------------------+-------|
+| 0x03    | Sprite X Position  | 1     |
+'--------------------------------------'
+</code></pre>
+<p>Note that a max of 8 sprites can be shown on each horizontal line, with the lower sprites taking precedence. To avoid invisible sprites their order should be quickly swapped (flickered) in software.</p>
+<div class="home"><a href="index.html">home</a> <a href="rss.xml">rss</a></div>
+</body>
+</html>
