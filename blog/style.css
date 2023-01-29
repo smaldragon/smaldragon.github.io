@@ -4,23 +4,23 @@ html {
 }
 
 body {
-	
 	font-family: "Comic Sans MS", "Comic Sans", cursive;
 	background-color: lemonchiffon;
 	text-align: center;
-
 }
 
 article {
 	padding:1em;
 	max-width:42em;
 	margin:auto;
-	border-color: lightcoral;
-	background-color: cornsilk;
-	border-width: 1em;
-	border-style: groove;
 	text-align: left;
 
+	background-color: cornsilk;
+	
+	border-color: lightcoral;
+	border-width: 1em;
+	border-style: groove;
+	border-radius: 2em;
 }
 
 .home {
