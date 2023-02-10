@@ -24,15 +24,46 @@
 <pre><code>.--------------------------------------.
 |        64KB CPU ADDRESS SPACE        |
 |--------------------------------------|
-| ADDR    | INFO              | BYTES  |
-|---------+-------------------+--------|
-| 0x0000  | Work Ram          | 2,048  | 
-| 0x2000  | PPU Registers     | 8      |
-| 0x4000  | APU/IO Registers  | 32     |
-| 0x4020  | Cartridge Space   | 32,736 |
+| ADDR    | INFO          | BYTES      |
+|______________________________________|
+| 0x0000  | RAM           | (2,048)    |
+| 0x0800  | ...           |            |
+| 0x1000  | ...           |            |
+| 0x1800  |_...___________|____________|
+| 0x2000  | PPU Registers | (8)        |
+| 0x2800  | ...           |            |
+| 0x3000  | ...           |            |
+| 0x3800  |_...___________|____________|
+| 0x4000  | 2A03 Registers|_32_________|
+| 0x4020  |CARTRIDGE SPACE| 49,119     |
+| 0x5000  |               |            |
+| 0x5800  |               |            |
+| 0x6000  |¯mram¯¯¯¯¯¯¯¯¯¯| [8,192]    |
+| 0x6800  |               |            |
+| 0x7000  |               |            |
+| 0x7800  |               |            |
+| 0x8000  |¯/romsel¯¯¯¯¯¯¯| [32,768]   |
+| 0x8800  |               |            |
+| 0x9000  |               |            |
+| 0x9800  |               |            |
+| 0xA000  |               |            |
+| 0xA800  |               |            |
+| 0xB000  |               |            |
+| 0xB800  |               |            |
+| 0xC000  |               |            |
+| 0xC800  |               |            |
+| 0xD000  |               |            |
+| 0xD800  |               |            |
+| 0xE000  |               |            |
+| 0xE800  |               |            |
+| 0xF000  |               |            |
+| 0xF800  |               |            |
 '--------------------------------------'
-* note: work ram and ppu registers are mirrored
-   in the &quot;empty&quot; space following them
+* note: 
+    1.work ram and ppu registers are mirrored
+      in the &quot;empty&quot; space following them
+    2.mram and /romsel refer to CARTRIDGE SPACE
+      subdivisions commonly used by mappers
 </code></pre>
 <h2>Work RAM</h2>
 <p>All RAM can be accessed equally by the CPU, however the first two pages are also used for special purposes by the CPU:</p>
@@ -193,19 +224,29 @@
 <p>This DMA is the proper way to update OAM and should be performed every vblank, as the OAM memory will become corrupted if it is not regularly refreshed.</p>
 <p>It is common practice to initialize the PPU's <code>OAM_ADDR</code> register to 0 before performing this write.</p>
 <h2>Cartridge Space</h2>
-<p>The Cartridge Space will vary depending on what memory mapper is being used, however some areas have fixed purposes:</p>
+<p>The arrangement Cartridge Space will vary depending on what memory mapper is being used, with most mappers following a variation of the following:</p>
 <pre><code>.---------------------------------------.
 | ADDR    | INFO               | BYTES  |
 |---------+--------------------+--------|
-| 0x4020  | Program Space      | 32,730 |
+| 0x4020  | Start of Cart Space|        |
+| 0x6000  | Common MRAM Area   | 8192   |
+| 0x8000  | /ROMSEL area       | 32767  |
+'---------------------------------------'
+/ROMSEL is a signal sent by the NES to the cartridge slot, 
+this is used in the majority of mappers for ROM access.
+</code></pre>
+<p>Further Some areas have fixed purposes by the 2a03 chip:</p>
+<pre><code>.---------------------------------------.
+| ADDR    | INFO               | BYTES  |
+|---------+--------------------+--------|
+| 0xC000  | (DPCM Sample Area) | 16369  |
 | 0xFFFA  | 2a03 NMI Vector    | 2      |
 | 0xFFFC  | 2a03 Reset Vector  | 2      |
 | 0xFFFE  | 2a03 IRQ/BRK Vector| 2      |
 '---------------------------------------'
-Additionally the space from 0xC000 
-  to 0xFFF1 can contain DPCM samples.
+The Vectors contain the addresses that the CPU 
+will jump to whenever certain types of interrupt occur.
 </code></pre>
-<p>The Vectors contain the addresses that the CPU will jump to whenever certain types of interrupt occur.</p>
 <hr />
 <h1>PPU Memory</h1>
 <pre><code>.--------------------------------------.
