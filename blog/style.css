@@ -41,3 +41,71 @@ img {
 	max-width: 100%;
 	text-align: center;
 }
+
+/* W3 */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: lightcoral;
+}
+.toc {
+  z-index: 1;
+  float:left;
+  display: block;
+}
+.toc ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.toc li {
+  float: left;
+}
+
+.toc li a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  background-color: lightcoral;
+}
+
+.blog {
+  float: right;
+}
+.blog a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.toc li a:hover, .dropdown:hover .dropbtn, .blog a:hover {
+  background-color: red;
+}
+
+.toc li>ul {
+  display: None;
+  position: fixed;
+}
+
+.toc li:hover>ul {
+  display: block;
+  bottom: 50px;
+}
+
+.toc li>ul>li:hover>ul {
+  display: block;
+  bottom: 100px;
+}
+
+.toc li>ul>li>ul>li:hover>ul {
+  display: block;
+  bottom: 150px;
+}
