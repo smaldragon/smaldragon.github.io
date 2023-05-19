@@ -1,4 +1,4 @@
-var incident = new Date(2023, 4, 19); //YYYY, MM, DD //month counts from 00 i.e may = 04 not 05
+var incident = new Date(2023, 4, 18); //YYYY, MM, DD //month counts from 00 i.e may = 04 not 05
 var today = Date.now();
 
 var difference = Math.round((today - incident)/(1000*60*60*24));
