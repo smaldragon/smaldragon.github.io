@@ -324,6 +324,12 @@ will jump to whenever certain types of interrupt occur.
 '--------------------------------------'
 </code></pre>
 <p>Note that a max of 8 sprites can be shown on each horizontal line, with the lower sprites taking precedence. To avoid invisible sprites their order should be quickly swapped (flickered) in software.</p>
+<hr />
+<h1 id="2a03-io">2a03 I/O</h1>
+<p>The 2a03, the NES CPU chip, contains built-in IO capabilities in the form of 5 pins:
+* <strong>OUT0, OUT1, OUT2</strong> - Static output pins which can be set by writing to <em>$4016</em> (3 lowest bits)
+* <strong>/OE1, /OE2</strong> - Active low pins that are pulsed when reading from <em>$4016</em> and <em>$4017</em>, respectively. These signals are also often referred to as <strong>CLK(1/2)</strong>. Each of these signals is used to enable an external buffer (74ls368), transferring their contents onto the 2a03 through the data bus.</p>
+<p>The Famicom, NES and Famiclones each wire these signals differently to their respective peripherals and ports. Requiring differing code and hardware design for each.</p>
 </article>
 <div class="footer">
 <div class="toc">
@@ -355,6 +361,7 @@ will jump to whenever certain types of interrupt occur.
 </ul>
 </li>
 <li><a href="#oam-memory">OAM Memory</a></li>
+<li><a href="#2a03-io">2a03 I/O</a></li>
 </ul>
 </div>
 
