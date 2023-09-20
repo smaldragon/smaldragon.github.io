@@ -150,9 +150,9 @@
 <h2 id="banking-setup">Banking Setup</h2>
 <p>Register 1 stores bits 0 to 3 and Register 2 stores bits 4 to 7.</p>
 <ul>
-<li><strong>N/i30</strong> - This sets whether bit 4 is used for CHR (N) or for PRG (i30), the latter setting is used in the UNROM 512 mapper (iNES 030).</li>
+<li><strong>N/i30</strong> - This sets whether bit 4 is used for CHR (N) or for PRG (i30), the latter setting is used in the UNROM 512 mapper (iNES 030)</li>
 <li><strong>B##</strong> - The number of banked regions to use. If set to 2, a second banking register will become available at the range $C000-$FFFF.</li>
-<li><strong>PRG B##</strong> - The number of banked regions to use for PRG memory</li>
+<li><strong>PRG R##</strong> - Should the PRG banked regions occupy all (1) or half (2) of the address space.</li>
 <li><strong>CHR B##</strong> - The number of banked regions to use for CHR memory</li>
 </ul>
 <p>Finally we can decide which of the bits 5,6,7 are used for CHR banking:</p>
