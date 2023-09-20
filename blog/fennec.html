@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>smal's blog</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+<article>
+<h1>🦊 smal's blog</h1>
+<h1 id="fennec">Fennec</h1>
+<p>Fennec is my project for a homebrew computer based on the 8-bit 65c02 cpu, a variant of a classic cpu used in many computers and consoles from the 70s and 80s.</p>
+<p>My personal definition of bare minimum for a "computer" is the following:
+* A display
+* A keyboard
+* Long-term storage</p>
+<p>That's it! Really. The fennec is at its core a computer made for tinkering with both code and hardware, and to me that means giving the user a base platform for them to drive in whichever direction they desire.</p>
+<h2 id="whats-the-computer">What's the computer</h2>
+<p>I wanted a platform that allows me to experiment with designing my own peripheral modules for things like video, sound, io, and whicever else catches my attention. As well as making my own low level code, kernel routines and programming langages. It is at its heart a machine for thinkering with by a person looking to fullfill their own personal interests and goal.</p>
+<p>Finally here are some more specs for what the base machine will offer:
+* Built-in 128x64 1-bit monochrome display
+* Built-in 40 key keyboard
+* 65c02 8-bit CPU @0.9-6Mhz (undecided on speed still)
+* Banked memory featuring:
+* * Up to 2Mb of RAM
+* * Up to 2Mb of long-term Flash Memory
+* A tiny 2Kb Boot/Diagnostics ROM
+* A wooping 6 Expansion Slots for endless expansion opportunities.</p>
+<ul>
+<li><strong>SLOW#</strong> - This is a signal available for peripherals that require slower clock speeds than the one provided by the main clock of the Fennec. Connecting this line to PS# via a diode will stretch the clock into a slower speed.</li>
+</ul>
+<pre><code>.--------------------------------------.
+|        64KB CPU ADDRESS SPACE        |
+|--------------------------------------|
+| ADDR    | INFO          | BYTES      |
+|______________________________________|
+| 0x0000  | RAM (Bank 0)  | [16,384]   |
+| 0x0800  | ...           |            |
+| 0x1000  | ...           |            |
+| 0x1800  |               |            |
+| 0x2000  |               |            |
+| 0x2800  | ...           |            |
+| 0x3000  | ...           |            |
+| 0x3800  |               |            |
+| 0x4000  |¯BANK RAM      | [16,384]   |
+| 0x4020  |               |            |
+| 0x5000  |               |            |
+| 0x5800  |               |            |
+| 0x6000  |               |            |
+| 0x6800  |               |            |
+| 0x7000  |               |            |
+| 0x7800  |_...___________|            |
+| 0x8000  |¯SLOTS 0     ¯¯| [16,384]   |
+| 0x8800  |       1       |            |
+| 0x9000  |       2       |            |
+| 0x9800  |       3       |            |
+| 0xA000  |       4       |            |
+| 0xA800  |       5       |            |
+| 0xB000  |       6       |            |
+| 0xB800  |_...___7_______|            |
+| 0xC000  | BOOT ROM      | [16,384]   |
+| 0xC800  |               |            |
+| 0xD000  |               |            |
+| 0xD800  |               |            |
+| 0xE000  |               |            |
+| 0xE800  |               |            |
+| 0xF000  |               |            |
+| 0xF800  |               |            |
+'--------------------------------------'
+
+The Vixxen Architecture has 256 banks of 16kb of memory:
+* First 128 are RAM and the last 128 FLASH
+* BOOT/bank -1 is the top 8kb of the last bank in FLASH, 
+   where the startup code and interrupt vectors are located;
+* Bank X is determined by a register in the MOXY module.
+</code></pre>
+<h1 id="moxy">MOXY</h1>
+<p><strong>MOXY</strong> is the base module of the Fennec and is always present in the architecture, and overall perfectly embodies the overall Fennec philosophy of: "simple, hacky and flexible", its located at slot 0 (<em>$8000</em>) and provides many useful functions:</p>
+<ul>
+<li>Keyboard reading</li>
+<li>Memory Bank switching</li>
+<li>General Purpose SPI Bus</li>
+<li>Built-in Display</li>
+<li>SD Card</li>
+<li>Beeper</li>
+<li>/NMI "watchdog" timer</li>
+</ul>
+<h2 id="keyboard">Keyboard</h2>
+<h2 id="bank-switching">Bank Switching</h2>
+<p>The bank register is a read-only register located at <em>$8001</em>. The logical width of this register is 8-bit but actual physical width will vary according to hardware implementation.</p>
+<h2 id="spi">SPI</h2>
+<p>The Fennec provides a 5v hardware accelerated SPI bus, used internally for the display and SD card and available via SPI ports on the side of the machine (connector to be determined). The interface is available through reading and writing addresses <em>80x0</em>, where <em>x</em> corresponds to one of 7 SPI ports:</p>
+<ol>
+<li>dummy (disconnected)</li>
+<li>a0</li>
+<li>display</li>
+<li>sd card</li>
+<li>(empty)</li>
+<li>(empty)</li>
+<li>/nmi timer reset (tentative)</li>
+<li>beeper</li>
+</ol>
+<p>Accessing a port performs two separate operations simultaneously:</p>
+<ol>
+<li>Sets the port line high if a read operation is performed and low if a write is performed.</li>
+<li>Reads the contents of the <strong>Host In</strong> register or writes to the <strong>Host Out</strong> shift register and initiates an 8-bit serial transfer.</li>
+</ol>
+<p>This particular approach was chosen with the goal of being, simple to implement in hardware, fast to use and access, and flexible.</p>
+<blockquote>
+<p>note: there is no particular motive why the display <em>must</em> be located within the SPI bus, all 1-bit screen controller ICs also offer either a 6800 or 8008 bus mode in addition to serial, pre-made SPI modules are just generally easier and cheaper to get hands on due to the increased demand from micro controller use.</p>
+</blockquote>
+<h2 id="1-bit-beeper">1-Bit Beeper</h2>
+<p>The 1-bit beeper is located at <em>$8070</em> (piggybacking onto port 7 of the SPI bus), it is a very crude software controlled sound output where writing to the port will set the sound low while reading from it will set it high. This means that any beeper audio must be generated directly by the 65c02 using software timing loops.</p>
+<p>Note that due to being technically hacked onto the SPI bus in the most crude way imaginable, writing to the beeper will actually also initiate a serial transfer and thus interfere with any transfers that may be under progress at the time of access, so extra care must be taken to avoid any conflicts.</p>
+<h2 id="nmi-timer-tentative">NMI Timer (tentative)</h2>
+<p>The NMI timer is located at <em>$8060</em>, reading from this port will hold the timer in a reset state, while writing to it will enable it.</p>
+<h1 id="proxy">PROXY</h1>
+<p><strong>PROXY</strong> is an I/O module for the Vixxen, it contains a 65c22 VIA and a 65c51 ACIA, providing:</p>
+<ul>
+<li>Serial Port</li>
+<li>Several GPIO Pins</li>
+<li>Interrupt Timer</li>
+</ul>
+<h1 id="foxy">FOXY</h1>
+<p><strong>FOXY</strong> is a soundcard based on a custom sound circuit, it uses 1-bit waveforms for a variety of different audio.</p>
+<h1 id="boxy">BOXY</h1>
+<p><strong>BOXY</strong> will be a video out module, details yet to be determined.</p>
+</article>
+<div class="footer">
+<div class="toc">
+<ul>
+<li><a href="#fennec">Fennec</a><ul>
+<li><a href="#whats-the-computer">What's the computer</a></li>
+</ul>
+</li>
+<li><a href="#moxy">MOXY</a><ul>
+<li><a href="#keyboard">Keyboard</a></li>
+<li><a href="#bank-switching">Bank Switching</a></li>
+<li><a href="#spi">SPI</a></li>
+<li><a href="#1-bit-beeper">1-Bit Beeper</a></li>
+<li><a href="#nmi-timer-tentative">NMI Timer (tentative)</a></li>
+</ul>
+</li>
+<li><a href="#proxy">PROXY</a></li>
+<li><a href="#foxy">FOXY</a></li>
+<li><a href="#boxy">BOXY</a></li>
+</ul>
+</div>
+
+<div class="blog">
+<a href="https://smaldragon.github.io/">home</a> <a href="index.html">blog</a>
+</div>
+</div>
+</body>
+</html>

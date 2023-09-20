@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>smal's blog</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+<article>
+<h1>🦊 smal's blog</h1>
+<h1 id="the-ff1-famiflex-mapper">The FF1 (FamiFlex) Mapper!</h1>
+<p><img alt="" src="ff1_render.png" /></p>
+<p>So, some time ago I bought an old famiclone, and eventually I wanted to give a shot at playing some homebrew games on it (and even maybe make my own), so out of boredom and a desire for learning came the FF1 mapper!</p>
+<p>Its a mapper that makes use of 74670 4x4 register chips (as I had a bunch of them lying around), and that can be configured to emulate many of the "bus-conflict" mappers that are commonly used in the homebrew scene, including NROM, UNROM, AxROM and UNROM 512. As well as many other possible configurations (including some not really present in any documented mapper).</p>
+<table>
+<thead>
+<tr>
+<th><strong>MAPPER</strong></th>
+<th>n.ICs</th>
+<th>PRG max(Kb)</th>
+<th>PRG banking</th>
+<th>CHR type</th>
+<th>CHR max(Kb)</th>
+<th>CHR banking</th>
+<th>PRG RAM</th>
+<th>Game Saves</th>
+<th>Mirroring</th>
+<th>Register</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NROM (i000)</td>
+<td>2</td>
+<td>32</td>
+<td>32f</td>
+<td>ROM</td>
+<td>8</td>
+<td>8f</td>
+<td>no</td>
+<td>no</td>
+<td>fixed V/H</td>
+<td>-</td>
+</tr>
+<tr>
+<td>UNROM (i002)</td>
+<td>4</td>
+<td>256</td>
+<td>16+16f</td>
+<td>RAM</td>
+<td>8</td>
+<td>8f</td>
+<td>no</td>
+<td>no</td>
+<td>fixed V/H</td>
+<td>----.PPPP</td>
+</tr>
+<tr>
+<td>AxROM (i007)</td>
+<td>4</td>
+<td>128</td>
+<td>32</td>
+<td>RAM</td>
+<td>8</td>
+<td>8f</td>
+<td>no</td>
+<td>no</td>
+<td>1-screen</td>
+<td>---M.-PPP</td>
+</tr>
+<tr>
+<td>BNROM (i034)</td>
+<td>4</td>
+<td>128</td>
+<td>32</td>
+<td>RAM</td>
+<td>8</td>
+<td>8f</td>
+<td>no</td>
+<td>no</td>
+<td>fixed V/H</td>
+<td>----.--PP</td>
+</tr>
+<tr>
+<td>COLORDREAMS (i011)</td>
+<td>?</td>
+<td>128</td>
+<td>32</td>
+<td>ROM</td>
+<td>128</td>
+<td>8</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>fixed V/H</td>
+</tr>
+<tr>
+<td>UNROM 512 (i030)</td>
+<td>5-6</td>
+<td>512</td>
+<td>16+16f</td>
+<td>RAM</td>
+<td>32</td>
+<td>8</td>
+<td>no</td>
+<td>yes (PRG FLASH)</td>
+<td>fixed V/H or switch 1-screen or fixed 4-screen</td>
+<td>MCCP.PPPP</td>
+</tr>
+<tr>
+<td><strong>FF1</strong></td>
+<td>2-4</td>
+<td>512</td>
+<td>32f or 32 or 16+16f or 16+16</td>
+<td>RAM/ROM</td>
+<td>32(RAM) or 128 (FLASH)</td>
+<td>8f or 8 or 4+4f or 4+4</td>
+<td>no</td>
+<td>yes (CHR FLASH)</td>
+<td>fixed V/H or switch 1-screen or fixed 4-screen</td>
+<td>variable (see jumper setup)</td>
+</tr>
+</tbody>
+</table>
+<h1 id="theory-of-operation">Theory of operation</h1>
+<p>The FF1 presents one or two registers accessible by writing to ROM (note: this is a bus conflict mapper, thus the region of ROM you write to must contain the same value you are writing). The register(s) can be either 4 or 8 bit, with each half of the byte being a separate `670 4x4 register.</p>
+<p>These registers in turn control the memory bank mapping of PRG and CHR, as well as mirroring while using single screen mode.</p>
+<h1 id="jumpers">Jumpers</h1>
+<p>FF1 uses a series of solder jumpers in the back of the board to customize it, these are where the flexibility part of the mapper comes in, as the board can be made to use a variety of different configurations:</p>
+<h2 id="nametable-setup">Nametable Setup</h2>
+<p>The Famicom PPU is based around using 4 logic nametable screens, but it only contains enough internal VRAM to store 2 of them, an option exists to use cartridge RAM instead in order to enable the maximum 4 screens, and is supported by FF1:</p>
+<ul>
+<li><strong>2s/4s</strong> - Use 2 or 4 screens, must be set</li>
+<li><strong>/VRAM</strong> - Enables the VRAM inside the Famicom, this should be bridged unless 4 screen mode is being used</li>
+</ul>
+<p>Finally when using 2 screen mode we must settle on a mirroring mode to use in order to fill up the 4 logical nametable screens, in that case one (and only one!) of the following jumpers must be set</p>
+<ul>
+<li><strong>Hm/Vm</strong> - Set mirroring to either fixed horizontal or vertical</li>
+<li><strong>1m/1m r.7</strong> - Set scrolling to 1 screen, either fixed or set by bit 7</li>
+<li><strong>1m r.5/6</strong> - Set scrolling to 1 screen, set by either bit 5 or 6</li>
+<li><strong>1m r.4</strong> - Set scrolling to 1 screen, set by bit 4</li>
+</ul>
+<blockquote>
+<p>1 screen mirror mode works by switching between 2 screens through the corresponding bit</p>
+</blockquote>
+<h2 id="banking-setup">Banking Setup</h2>
+<p>Register 1 stores bits 0 to 3 and Register 2 stores bits 4 to 7.</p>
+<ul>
+<li><strong>N/i30</strong> - This sets whether bit 4 is used for CHR (N) or for PRG (i30), the latter setting is used in the UNROM 512 mapper (iNES 030).</li>
+<li><strong>B##</strong> - The number of banked regions to use. If set to 2, a second banking register will become available at the range $C000-$FFFF.</li>
+<li><strong>PRG B##</strong> - The number of banked regions to use for PRG memory</li>
+<li><strong>CHR B##</strong> - The number of banked regions to use for CHR memory</li>
+</ul>
+<p>Finally we can decide which of the bits 5,6,7 are used for CHR banking:</p>
+<ul>
+<li><strong>4s/Br.5</strong> - Use 4 mode or use bit 5</li>
+<li><strong>Br.6</strong> - Use bit 6</li>
+<li><strong>Br.7</strong> - Use bit 7</li>
+</ul>
+<h2 id="r1-and-d1">R1 and D1</h2>
+<p>These are odd components needed for when bit 4 is used for PRG mapping in a Mapper i30-like mode. D1 should be a standard 1n4 diode and R1 Should be a 4.7K resistor.  </p>
+<h1 id="example-configurations">Example Configurations</h1>
+<h2 id="nrom">NROM</h2>
+<p>32K PRG + 8K CHR</p>
+<ul>
+<li>CHR Rom</li>
+<li>No Register</li>
+<li>Set jumpers <strong>/VRAM</strong>, <strong>2s</strong>, <strong>N</strong></li>
+<li>Set Hm or Vm according to which mirroring type is used by the game.</li>
+</ul>
+<h2 id="axrom">AxROM</h2>
+<p>512K PRG (16x32K) + 8K CHRam</p>
+<ul>
+<li>CHR Ram</li>
+<li>Lo Registe + Hi Register</li>
+<li>Set jumpers <strong>/VRAM</strong>, <strong>2s</strong>, <strong>N</strong>, <strong>B# 1</strong>, <strong>PRG B# 2</strong>, <code>1m.r4</code></li>
+</ul>
+<h2 id="unrom">UNROM</h2>
+<p>256K PRG (16x16K) + 8K CHRam</p>
+<ul>
+<li>CHR Ram</li>
+<li>Lo Register</li>
+<li>Set jumpers <strong>/VRAM</strong>, <strong>2s</strong>, <strong>N</strong>, <strong>B# 1</strong>, <strong>PRG B# 1</strong> </li>
+<li>Set Hm or Vm according to which mirroring type is used by the game.</li>
+</ul>
+<h2 id="unrom-512">UNROM 512</h2>
+<p>512K PRG (32x16K) + 32K CHRam (4*8K)</p>
+<ul>
+<li>CHR Ram</li>
+<li>Lo Register + Hi Register</li>
+<li>D1 and R1</li>
+<li>Set jumpers <strong>/VRAM</strong>, <strong>2s</strong>, <strong>i30</strong>, <strong>B# 1</strong>, <strong>PRG B# 1</strong>, <strong>CHR B# 1</strong></li>
+<li>Set Hm or Vm according to which mirroring type is used by the game</li>
+</ul>
+<h2 id="ff1">FF1</h2>
+<p>A "Maxed-Out" setup for my own homebrew use.</p>
+<p>512K PRG (16x16K(a) + 16x16K(b)) + 128K CHRom (16x4K(a) + 16x4K(b))</p>
+<ul>
+<li>CHR Rom</li>
+<li>Lo Register + Hi Register</li>
+<li>Set jumpers <strong>/VRAM</strong>, <strong>2s</strong>, <strong>i30</strong>, <strong>B# 2</strong>, <strong>PRG B# 2</strong>, <strong>CHR B# 2</strong>, <strong>r.4 to r.7</strong>*</li>
+<li>Set Hm or Vm according to which mirroring type is used by the game.</li>
+</ul>
+<h1 id="links">Links</h1>
+<ul>
+<li><a href="github.com/smaldragon/FamiFlex">github</a>, containing the original KiCad files and gerbers.</li>
+</ul>
+</article>
+<div class="footer">
+<div class="toc">
+<ul>
+<li><a href="#the-ff1-famiflex-mapper">The FF1 (FamiFlex) Mapper!</a></li>
+<li><a href="#theory-of-operation">Theory of operation</a></li>
+<li><a href="#jumpers">Jumpers</a><ul>
+<li><a href="#nametable-setup">Nametable Setup</a></li>
+<li><a href="#banking-setup">Banking Setup</a></li>
+<li><a href="#r1-and-d1">R1 and D1</a></li>
+</ul>
+</li>
+<li><a href="#example-configurations">Example Configurations</a><ul>
+<li><a href="#nrom">NROM</a></li>
+<li><a href="#axrom">AxROM</a></li>
+<li><a href="#unrom">UNROM</a></li>
+<li><a href="#unrom-512">UNROM 512</a></li>
+<li><a href="#ff1">FF1</a></li>
+</ul>
+</li>
+<li><a href="#links">Links</a></li>
+</ul>
+</div>
+
+<div class="blog">
+<a href="https://smaldragon.github.io/">home</a> <a href="index.html">blog</a>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>smal's blog</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+<article>
+<h1>🦊 smal's blog</h1>
+<p><strong>Useful TTL Chips for homebrew computing</strong></p>
+<h1 id="shift-registers">Shift Registers</h1>
+<h2 id="feedback-circuits">Feedback circuits</h2>
+<p>Shift Registers can also be setup to serve as timers and clock generators, for example here is part of the clock generation logic of the Apple 2 where multiple lines on a '''''shift register are tied together in specific ways in order to generate several clock signals that are needed by different components of the machine:</p>
+<h1 id="data-registers">Data Registers</h1>
+<h1 id="buffertransceivers">Buffer/Transceivers</h1>
+<p>These chips are used to isolate 2 buses (or different parts of the same bus), Buffers are uni-directional, while Transceiver chips can be selected to work in either direction.</p>
+<h2 id="extra-74uvidufgaso245">Extra: 74uvidufgaso245</h2>
+<p>As of the time of writing (April 2023), this is a recent chip that's similar to the '245 transceiver but with added voltage shifting capabilities, basically it allows for the bidirectional data lines of 5v and 3.3v devices to very easily be interfaced together, excellent for using things like more modern 3.3v screens and sd cards on a typical 5v 8-bit homebrew computer. Note however that this particular chip is only available in SMT packages, so it can only be used in either printed circuit boards or through means of an DIP adapter.</p>
+<h1 id="decodersdemultiplexers">Decoders/Demultiplexers</h1>
+<p>Decoders/Demultiplexers are very useful chips that take a binary address value and generate a series of chip select signals, many have variants for both active-low and active-high outputs:</p>
+<table>
+<thead>
+<tr>
+<th>Active-Low out</th>
+<th>Active-High out</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>'139</td>
+<td>'239</td>
+<td>Two 2a → 4cs modules, each module has individual E# lines</td>
+</tr>
+<tr>
+<td>'155</td>
+<td>'255</td>
+<td>Two 2a → 4cs modules, one module has a E# and E and the other 2 E#</td>
+</tr>
+<tr>
+<td>'138</td>
+<td>'238</td>
+<td>One 3a → 8cs module, has 2 E# lines and 1 E</td>
+</tr>
+<tr>
+<td>'42</td>
+<td>-</td>
+<td>One 4a → 10cs module</td>
+</tr>
+<tr>
+<td>'154</td>
+<td>-</td>
+<td>One 4a → 16cs module, has 2E# lines</td>
+</tr>
+</tbody>
+</table>
+<p>Common uses of these chips are memory address decoding and keyboard matrix reading. For an example here is the address decoding logic used by the Nintendo Entertainment System, implemented using a single '139 chip:</p>
+<p><img alt="" src="nes-decoding.png" /></p>
+<pre><code>
+         '139-a                          '139-b
+       +---------+                     +--------+
+   ø2 →|→s0   o0→|                a13 →|→s0  o0→|→ WRAM#
+  a15 →|→s1   o1→|→---------.     a14 →|→s1  o1→|→ PPU#
+       |      o2→|          |          |     o2→|
+   gnd→|→E#   o3→|→ ROMSEL# `---------→|→E#  o3→|
+       +---------+                     +--------+
+</code></pre>
+</article>
+<div class="footer">
+<div class="toc">
+<ul>
+<li><a href="#shift-registers">Shift Registers</a><ul>
+<li><a href="#feedback-circuits">Feedback circuits</a></li>
+</ul>
+</li>
+<li><a href="#data-registers">Data Registers</a></li>
+<li><a href="#buffertransceivers">Buffer/Transceivers</a><ul>
+<li><a href="#extra-74uvidufgaso245">Extra: 74uvidufgaso245</a></li>
+</ul>
+</li>
+<li><a href="#decodersdemultiplexers">Decoders/Demultiplexers</a></li>
+</ul>
+</div>
+
+<div class="blog">
+<a href="https://smaldragon.github.io/">home</a> <a href="index.html">blog</a>
+</div>
+</div>
+</body>
+</html>
