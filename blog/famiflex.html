@@ -128,6 +128,14 @@
 <h1 id="theory-of-operation">Theory of operation</h1>
 <p>The FF1 presents one or two registers accessible by writing to ROM (note: this is a bus conflict mapper, thus the region of ROM you write to must contain the same value you are writing). The register(s) can be either 4 or 8 bit, with each half of the byte being a separate `670 4x4 register.</p>
 <p>These registers in turn control the memory bank mapping of PRG and CHR, as well as mirroring while using single screen mode.</p>
+<h1 id="parts">Parts</h1>
+<ul>
+<li><code>39SF040</code> 512Kb Flash Memory, 1 or 2 depending if CHR Ram is used</li>
+<li><code>62256 SRAM</code> Standard 32K*8 memory, used for games with CHR Ram</li>
+<li><code>74hc670</code> Register Chips; 0, 1, or 2 depending on the game</li>
+<li><code>9pin ~3.3K to 10K resistor network</code> Best value not currently determined</li>
+<li><code>0805</code> smd decoupling caps (1 per chip)</li>
+</ul>
 <h1 id="jumpers">Jumpers</h1>
 <p>FF1 uses a series of solder jumpers in the back of the board to customize it, these are where the flexibility part of the mapper comes in, as the board can be made to use a variety of different configurations:</p>
 <p><img alt="" src="ff1_back_render.png" /></p>
@@ -215,6 +223,7 @@
 <ul>
 <li><a href="#the-ff1-famiflex-mapper">The FF1 (FamiFlex) Mapper!</a></li>
 <li><a href="#theory-of-operation">Theory of operation</a></li>
+<li><a href="#parts">Parts</a></li>
 <li><a href="#jumpers">Jumpers</a><ul>
 <li><a href="#nametable-setup">Nametable Setup</a></li>
 <li><a href="#banking-setup">Banking Setup</a></li>
