@@ -3,15 +3,20 @@ html {
   	min-height: 100%;
 }
 
+@font-face {
+  font-family: myFirstFont;
+  src: url(AtkinsonHyperlegible-Regular.woff2);
+}
+
 body {
-	font-family: "Comic Sans MS", "Comic Sans", cursive;
+	font-family: myFirstFont, "Comic Sans MS", "Comic Sans", cursive;
 	background-color: lemonchiffon;
 	text-align: center;
 }
 
 article {
 	padding:1em;
-	max-width:42em;
+	max-width:52em;
 	margin:auto;
 	text-align: left;
 
@@ -37,8 +42,11 @@ article {
 img {
 	padding:0;
 	position: relative;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
 	width: auto;
-	max-width: 100%;
+	max-width: 70%;
 	text-align: center;
 }
 
@@ -108,4 +116,12 @@ img {
 .toc li>ul>li>ul>li:hover>ul {
   display: block;
   bottom: 150px;
+}
+
+table, th, td {
+  border: 1px solid;
+}
+
+h1 {
+  text-align: center;
 }
