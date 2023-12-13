@@ -122,7 +122,7 @@
 </table>
 <p>Cartridges are the main form of media and expansion used by the KITTY, with the system being able to hold 2 cartridges at a time (cart 1 and cart 2), each holding a 4Mb address space, that can be filled with programs, extra ram or peripheral devices.</p>
 <p>They are accessed through the upper half of the KITTY memory map (<code>$8000-$FFFF</code>), which acts as 32Kb window into the contents of one of the 2 carts. This window can then be controlled by writing to the BANK register located at <code>$70D0</code>. The upper bit will determine the cartridge, while the 7 remaining bits will select one of up to 128 banks within it.</p>
-<p>Finally, on harware reset/power-on the BANK register will always be cleared to $00. The cpu will always begin code execution from the first bank of the first cartridge.</p>
+<p>Finally, on hardware reset/power-on the BANK register will always be cleared to $00. The CPU will always begin code execution from the first bank of the first cartridge.</p>
               
             </div>
           </div><footer>

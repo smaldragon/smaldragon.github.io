@@ -193,7 +193,7 @@
 <p><img alt="" src="../waves-export.png" /></p>
 <p>In hardware 4 <code>74hc165</code> shift-registers hold each waveform and are clocked in a self-feeding fashion in order to produce a note.</p>
 <h2 id="setting-the-frequency-channels-1-3">Setting the Frequency (Channels 1-3)</h2>
-<p>The frequency of the melodic channels (1-3) are controlled by a <code>82c54</code> tripple timer addressable at <code>$70E0-$70E3</code>, this is a chip also found in the original IBM PC, where it is used to control its beeper (along with other non-sound functions). Its programming is a bit more complex compared to the other sound registers, but I will try and explain it here as best I can.</p>
+<p>The frequency of the melodic channels (1-3) are controlled by a <code>82c54</code> triple timer addressable at <code>$70E0-$70E3</code>, this is a chip also found in the original IBM PC, where it is used to control its beeper (along with other non-sound functions). Its programming is a bit more complex compared to the other sound registers, but I will try and explain it here as best I can.</p>
 <hr />
 <p>Before setting the frequency for any of the melodic channels, one must first write to the frequency control register (<code>$70E3</code>), to configure the action to perform (this must be done whenever you want to set a new frequency):</p>
 <pre><code>7  bit  0
@@ -234,10 +234,10 @@ SSFFMMMD
     sta [$70E0]
 </code></pre>
 <blockquote>
-<p><strong>NOTE:</strong> A counter value of 0 is equivelant to 65536, while a counter value of 1 is <em>illegal</em> and should not be used.</p>
+<p><strong>NOTE:</strong> A counter value of 0 is equivalent to 65536, while a counter value of 1 is <em>illegal</em> and should not be used.</p>
 </blockquote>
 <h2 id="the-percussive-channel-channel-4">The Percussive Channel (channel 4)</h2>
-<p>Unlike the first 3 "melodic" channels, channel 4 lacks frequency control, and instead uses a fixed frequency of 50hz, which is syncronized with the video circuit.</p>
+<p>Unlike the first 3 "melodic" channels, channel 4 lacks frequency control, and instead uses a fixed frequency of 50hz, which is synchronized with the video circuit.</p>
 <p>By carefully writing new wavetable values to this register once per frame (when the screen IRQ is called), it is thus possible to generate simple percussive sounds like white noise and drums.</p>
               
             </div>
