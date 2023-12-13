@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Audio - KITTY Manual</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Audio";
+        var mkdocs_page_input_path = "audio.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> KITTY Manual
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../cartridge/">Cartridges and Memory</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../interrupt/">Interrupts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../video/">Video</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Audio</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setting-the-volume">Setting the volume</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setting-a-waveform">Setting a Waveform</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setting-the-frequency-channels-1-3">Setting the Frequency (Channels 1-3)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#the-percussive-channel-channel-4">The Percussive Channel (channel 4)</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../keyboard/">Keyboard</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">KITTY Manual</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Audio</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="audio-system">Audio System</h1>
+<p><img alt="" src="../board-audio.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Address</th>
+<th>Mode</th>
+<th>Description</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$70E0</code></td>
+<td>R/W</td>
+<td>Channel 1 Frequency</td>
+<td><code>%cccc_cccc</code> <strong>c</strong>ounter value</td>
+</tr>
+<tr>
+<td><code>$70E0</code></td>
+<td>R/W</td>
+<td>Channel 2 Frequency</td>
+<td><code>%cccc_cccc</code> <strong>c</strong>ounter value</td>
+</tr>
+<tr>
+<td><code>$70E0</code></td>
+<td>R/W</td>
+<td>Channel 3 Frequency</td>
+<td><code>%cccc_cccc</code> <strong>c</strong>ounter value</td>
+</tr>
+<tr>
+<td><code>$70E3</code></td>
+<td>R/W</td>
+<td>Frequency Control Register</td>
+<td><code>%ssffmmmd</code> (see frequency section)</td>
+</tr>
+<tr>
+<td><code>$70F0</code></td>
+<td>W</td>
+<td>Channel 1 Volume</td>
+<td><code>%llll_rrrr</code> <strong>l</strong>eft and <strong>r</strong>ight volume</td>
+</tr>
+<tr>
+<td><code>$70F1</code></td>
+<td>W</td>
+<td>Channel 2 Volume</td>
+<td><code>%llll_rrrr</code> <strong>l</strong>eft and <strong>r</strong>ight volume</td>
+</tr>
+<tr>
+<td><code>$70F2</code></td>
+<td>W</td>
+<td>Channel 3 Volume</td>
+<td><code>%llll_rrrr</code> <strong>l</strong>eft and <strong>r</strong>ight volume</td>
+</tr>
+<tr>
+<td><code>$70F3</code></td>
+<td>W</td>
+<td>Channel 4 Volume</td>
+<td><code>%llll_rrrr</code> <strong>l</strong>eft and <strong>r</strong>ight volume</td>
+</tr>
+<tr>
+<td><code>$70F4</code></td>
+<td>W</td>
+<td>Channel 1 Waveform</td>
+<td><code>%wwww_wwww</code> 8x1 <strong>w</strong>aveform</td>
+</tr>
+<tr>
+<td><code>$70F5</code></td>
+<td>W</td>
+<td>Channel 2 Waveform</td>
+<td><code>%wwww_wwww</code> 8x1 <strong>w</strong>aveform</td>
+</tr>
+<tr>
+<td><code>$70F6</code></td>
+<td>W</td>
+<td>Channel 3 Waveform</td>
+<td><code>%wwww_wwww</code> 8x1 <strong>w</strong>aveform</td>
+</tr>
+<tr>
+<td><code>$70F7</code></td>
+<td>W</td>
+<td>Channel 4 Waveform</td>
+<td><code>%wwww_wwww</code> 8x1 <strong>w</strong>aveform</td>
+</tr>
+</tbody>
+</table>
+<p>The KITTY provides a custom and unique sound system capable of generating chiptune music and sound effects. It is a wavetable synth (using a measly 8x1 resolution), with stereo volume control (4bit+4bit), and 4 sound channels (3 melodic and 1 percursive).</p>
+<h2 id="setting-the-volume">Setting the volume</h2>
+<p>The volume registers (<code>$70F0-$70F3</code>) allow you to set the current volume of each channel for both the left and right audio speakers.</p>
+<p>Volume is defined by a writing single byte to the register, where the upper nibble sets the volume for the left speaker and the lower nibble the right channel. By writing different volume values on every frame the programmer can achieve smooth volume envelopes and panning effects. For example, the value <code>$F8</code> would output a wave at max value on the left speaker and at half volume on the right.</p>
+<p>In hardware 2 <code>74hc670</code> 4x4bit registers hold the left and right volumes of each channel, and are each connected to one of the two left/right audio DACs.</p>
+<h2 id="setting-a-waveform">Setting a Waveform</h2>
+<p>The waveform registers (<code>$70F4-$70F7</code>) allow you to set the "timbre" to be used by each channel.</p>
+<p>The waveform is defined by writing a single byte to the register, where each bit is interpreted as either a low (0) or high (1) on the waveform. For example, writing the value <code>$F0</code> (<code>%11110000</code>) would create a simple square wave, while <code>$C0</code> (<code>%11000000</code>) would generate a 25% duty pulse wave. By playing around with values its possible to make a wide array of interesting sounds:</p>
+<p><img alt="" src="../waves-export.png" /></p>
+<p>In hardware 4 <code>74hc165</code> shift-registers hold each waveform and are clocked in a self-feeding fashion in order to produce a note.</p>
+<h2 id="setting-the-frequency-channels-1-3">Setting the Frequency (Channels 1-3)</h2>
+<p>The frequency of the melodic channels (1-3) are controlled by a <code>82c54</code> tripple timer addressable at <code>$70E0-$70E3</code>, this is a chip also found in the original IBM PC, where it is used to control its beeper (along with other non-sound functions). Its programming is a bit more complex compared to the other sound registers, but I will try and explain it here as best I can.</p>
+<hr />
+<p>Before setting the frequency for any of the melodic channels, one must first write to the frequency control register (<code>$70E3</code>), to configure the action to perform (this must be done whenever you want to set a new frequency):</p>
+<pre><code>7  bit  0
+---- ----
+SSFFMMMD
+| | |  |
+| | |  |- decimal:
+| | |      0: binary; 1: binary coded decimal
+| | |
+| | |- mode:
+| |   000: interrupt on terminal count
+| |   001: hardware one-shot
+| |   010: rate generator
+| |   011: square wave
+| |   100: software strobe
+| |   101: hardware strobe
+| |
+| |- format:
+|     00: latch counter value, 01: r/w low byte, 10: r/w high byte, 11 r/w low then high bytes
+|
+---- Register Selection (0-3)
+</code></pre>
+<p>Most of these options are not useful for our purpose, typically the configuration used will be <strong>format: 11</strong> (16-bit r/w), <strong>mode: 010</strong> (rate generator), <strong>decimal: 0</strong> (binary mode), or <code>%xx110100</code> (<code>$34</code> + <code>$xx</code>), where the top 2 bits are the register to operate on.</p>
+<p>The final frequency of each channel is then derived from the division of a 3Mhz base clock by the counter's 16-bit value, divided by the length of the wavetable (8 steps):</p>
+<pre><code>    frequency = 3Mhz / counter n / 8
+</code></pre>
+<p>Example:</p>
+<pre><code>    # Setting a frequency for channel 1 (CapyASM syntax)
+
+    # first set the control register, for channel 0
+    lda %00 + $34
+    sta [$70E3]
+
+    # now write a new frequency value ($9340)
+    lda $40
+    sta [$70E0]
+    lda $93
+    sta [$70E0]
+</code></pre>
+<blockquote>
+<p><strong>NOTE:</strong> A counter value of 0 is equivelant to 65536, while a counter value of 1 is <em>illegal</em> and should not be used.</p>
+</blockquote>
+<h2 id="the-percussive-channel-channel-4">The Percussive Channel (channel 4)</h2>
+<p>Unlike the first 3 "melodic" channels, channel 4 lacks frequency control, and instead uses a fixed frequency of 50hz, which is syncronized with the video circuit.</p>
+<p>By carefully writing new wavetable values to this register once per frame (when the screen IRQ is called), it is thus possible to generate simple percussive sounds like white noise and drums.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../video/" class="btn btn-neutral float-left" title="Video"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../keyboard/" class="btn btn-neutral float-right" title="Keyboard">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../video/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../keyboard/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

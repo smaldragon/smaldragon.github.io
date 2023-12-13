@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Interrupts - KITTY Manual</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Interrupts";
+        var mkdocs_page_input_path = "interrupt.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> KITTY Manual
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../cartridge/">Cartridges and Memory</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Interrupts</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#reset-reset">RESET - Reset</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#irq-interrupt-request">IRQ - Interrupt Request</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#wai-wait-for-interrupt">WAI - Wait for Interrupt</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#nmi-non-maskable-interrupt">NMI - Non-maskable Interrupt</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#brk-break">BRK - Break</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../video/">Video</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../audio/">Audio</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../keyboard/">Keyboard</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">KITTY Manual</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Interrupts</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="interrupts">Interrupts</h1>
+<p><img alt="" src="../board-cpu.png" /></p>
+<p>On the 65c02, vectors are a series of 16-bit addresses located at the very top of memory, that provide to the processer the location of a subroutine to execute whenever a given external hardware signal is recieved.</p>
+<table>
+<thead>
+<tr>
+<th>Interrupt</th>
+<th>Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IRQ</td>
+<td><code>$FFFE-$FFFF</code></td>
+</tr>
+<tr>
+<td>BRK</td>
+<td><code>$FFFE-$FFFF</code></td>
+</tr>
+<tr>
+<td>RESET</td>
+<td><code>$FFFC-$FFFD</code></td>
+</tr>
+<tr>
+<td>NMI</td>
+<td><code>$FFFA-$FFFB</code></td>
+</tr>
+</tbody>
+</table>
+<p>Interrupts subroutines operate very similarly to regular subroutines, but are exit through a <code>RTI</code> instruction instead of <code>RTS</code>.</p>
+<h2 id="reset-reset">RESET - Reset</h2>
+<p>The 65c02, like most other CPU architectures, utilizes a RESET signal in order to initialize the processor to a known and stable starting state. On the KITTY, this signal is triggered on power-up, as well as when the user manually presses the reset button.</p>
+<p>Reset utilizes the vector at <code>$FFFC-$FFFD</code>, aditionally, it also clears the BANK register to <code>$00</code>, meaning that code execution on the KITTY will always start at bank 0 of cart 0.</p>
+<h2 id="irq-interrupt-request">IRQ - Interrupt Request</h2>
+<p>The KITTY pocesses a single 50hz IRQ interrupt that is generated by the video circuit's signal rom, whenever the last visible pixel on a given frame is drawn to the screen. It utilizes the vector at<code>$FFFE-$FFFF</code>.</p>
+<p>This signal is the main method of keeping time on the system, allowing for code to run at a predictable pace, essential for the update loops of many programs and games.</p>
+<p>IRQ can be optionally disabled or enabled by the CPU at any time through the use of the <code>SEI</code> and <code>CLI</code> instructions, respectively. Note that on reset, IRQs will always be disabled, so the programmer must remember to enable them if they wish to make use of this feature.</p>
+<h3 id="wai-wait-for-interrupt">WAI - Wait for Interrupt</h3>
+<p>The 65c02 designed by the Western Design Center, introduced a new "Wait for Interrupt" Intruction (<code>WAI</code>), that as implied by the name, causes the CPU to "Wait" in place until awaken by an interrupt.</p>
+<p>While this instruction achieves a similar function as to what waiting on a infinite loop in older 65x processors would, it also pocesses an additional and very useful quirk: when an IRQ is triggered while Interrupts are disabled, the Wait state will end and execution will move on to the next instruction, bypassing the Interrupt Vector and associated routine entirely, and reacting within a single clock cycle.</p>
+<p>This can allow for code that is a lot more flexible, faster, and pleasant to write.</p>
+<h2 id="nmi-non-maskable-interrupt">NMI - Non-maskable Interrupt</h2>
+<p>The NMI, non-maskable interrupt, operates very similarly to IRQ, except that it can not be disabled in software. It uses the vector at <code>$FFFA-$FFFB</code>.</p>
+<p>On a vanilla KITTY, there is no hardware that generates this interrupt, but it is avaliable on the cartridge ports for use by potential peripheral expansions.</p>
+<h2 id="brk-break">BRK - Break</h2>
+<p>BRK is a software triggered interrupt, which shares the same Vector as IRQ (<code>$FFFE-$FFFF</code>). It can be distinguished from an IRQ by checking if the B bit (4th bit) on the processor status register, that was pushed to the stack, was set to 1.</p>
+<p>BRK is a two-byte instruction, with the second byte being unused and having no effect, however some assemblers might allow for this extra byte to be set to an arbritary given value.</p>
+<p>Overall, BRK is rarely used in software, but is described here for the sake of completion.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../cartridge/" class="btn btn-neutral float-left" title="Cartridges and Memory"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../video/" class="btn btn-neutral float-right" title="Video">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../cartridge/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../video/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

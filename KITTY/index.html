@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>KITTY Manual</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> KITTY Manual
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#details">Details</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#specs">SPECS</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="cartridge/">Cartridges and Memory</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="interrupt/">Interrupts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="video/">Video</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="audio/">Audio</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="keyboard/">Keyboard</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">KITTY Manual</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Home</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="what-is-a-kitty-an-introduction">What is a KITTY? (an introduction)</h1>
+<p><img alt="" src="board.png" /></p>
+<p>The <strong>KITTY</strong> (Kewl Interactive Text Terminal sYstem) is a new 8bit 65c02-based fantasy homebrew computer developed by smal (that's me!), it envisions a microcomputer which never existed, with colorful text based graphics, an unique sound system and, oddly, cartridges as its main form of media and expansion.</p>
+<p>Looking at the back of the system, we see an austere sight: An audio/video SCART port and two cartridge ports, and not a single peripheral port in sight! In fact, the basic cartridge that came bundled with every sold system had to include audio jacks on the cart itself in order to allow one to save their programs. Rather than a failure, this was the driving design philosphy behind the cost-saving design of the KITTY, to allow programs to come bundled with any extra features they might need, while leaving the base design unburdened, after all, what use would an extra port or feature be without an accompaning program to use it?</p>
+<p>Sadly we do not have access to this particular alternate reality (perhaps because it is imaginary), so we can not judge the success of this particular design approach. However, I have designed and built a version of this system here in our own world for anyone to play with, and this is what this manual is all about.</p>
+<p>I wish you a fun and (hopefully) educational time exploring this little system</p>
+<p><img alt="" src="photo.jpg" /></p>
+<blockquote>
+<p>The original v0a board prototype</p>
+</blockquote>
+<h2 id="details">Details</h2>
+<p>The current iteration of the KITTY board (v1a) uses only in-production parts and is open hardware that anyone can tweak and build upon, on the v1a board custom features like video and audio are all implemented through the means of discrete 74-series logic. All ICs are in either Dual-In-Line packages or PLCC packages using through hole sockets, so that no surface mount soldering is required for assembly and all ICs can be easily placed or removed.</p>
+<p>Finally, all components, their values, and their general function within the circuit are written on the silkscreen itself, as I wanted a board that was easy to assemble and understand.</p>
+<h2 id="specs">SPECS</h2>
+<ul>
+<li><strong>CPU</strong> 65c02 @ ~2.2mhz (3mhz bus)</li>
+<li><strong>RAM</strong> 28Kb Static Ram</li>
+<li><strong>MEDIA</strong> 2 cartridge slots for programs or expansion, each with up to 128 banks of 32kb for a theoretical max of 4Mb per cartridge</li>
+<li><strong>VIDEO</strong> Custom, 8x8 pixel characters on a 32x32 grid, selectable background/foreground colors from a pallette of 16 </li>
+<li><strong>AUDIO</strong> Custom, 4 channels of 8x1 wavetable audio (3 melodic, 1 percussive), with 4bit+4bit stereo volume control</li>
+<li><strong>INPUT</strong> Custom 40-key mechanical keyboard </li>
+<li><strong>OUTPUT</strong> SCART, using RGB progressive PAL @50.1hz</li>
+<li><strong>POWER</strong> 5v DC via a center positive barrel jack</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="cartridge/" class="btn btn-neutral float-right" title="Cartridges and Memory">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="cartridge/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.5.3
+Build Date UTC : 2023-12-13 17:10:43.381518+00:00
+-->
